@@ -5,7 +5,7 @@ import re
 import os
 
 BOT_TOKEN = os.getenv("8204941014:AAGWCWYqWSUKLYf0Eb1tL0mQX2lXjrYvXzw")
-CHAT_ID = os.getenv("1021891464")
+CHAT_ID = os.getenv("@primedayofferss")
 AFF_TAG = os.getenv("primedaydisco-21")
 
 # RSS feed -> change if you prefer other feed
