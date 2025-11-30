@@ -1,54 +1,47 @@
-# bot.py
-import feedparser
-import requests
-import re
 import os
+import requests
+import feedparser
 
 BOT_TOKEN = os.getenv("8204941014:AAGWCWYqWSUKLYf0Eb1tL0mQX2lXjrYvXzw")
 CHAT_ID = os.getenv("@primedayofferss")
 AFF_TAG = os.getenv("primedaydisco-21")
 
-# RSS feed -> change if you prefer other feed
-RSS_FEED = "https://desidime.com/deals.rss"
+# RSS feed (example)
+RSS_FEED = "https://www.coupondunia.in/rss/amazon-in"
 
-def extract_asin(url):
-    match = re.search(r'/dp/([A-Z0-9]{10})', url)
-    if match:
-        return match.group(1)
-    match = re.search(r'/gp/product/([A-Z0-9]{10})', url)
-    if match:
-        return match.group(1)
-    return None
-
-def send_message(msg):
+# Send Telegram message
+def send_message(text):
     url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
     data = {
         "chat_id": CHAT_ID,
-        "text": msg,
-        "parse_mode": "Markdown",
-        "disable_web_page_preview": False
+        "text": text,
+        "parse_mode": "HTML"
     }
-    resp = requests.post(url, data=data)
-    # optional: print for logs
-    print("sent:", resp.status_code, resp.text)
+    response = requests.post(url, data=data)
+    print("Telegram Response:", response.text)  # DEBUG
+    return response
 
 def main():
+    # TEST MESSAGE
     send_message("🔥 GitHub workflow is working bro!")
-    
-    feed = feedparser.parse(RSS_FEED)
-    # iterate first few items to avoid spam
-    for entry in feed.entries[:5]:
-        title = entry.get('title', 'Deal')
-        link = entry.get('link', '')
-        asin = extract_asin(link)
-        if asin:
-            aff_link = f"https://www.amazon.in/dp/{asin}?tag={AFF_TAG}"
-        else:
-            # fallback: append tag param (may not work for all stores)
-            aff_link = link + ("&" if "?" in link else "?") + f"tag={AFF_TAG}"
 
-        msg = f"🔥 *{title}*\n\nBuy Now 👉 {aff_link}\n\n_Hurry — limited stock!_"
-        send_message(msg)
+    # Fetch RSS deals
+    feed = feedparser.parse(RSS_FEED)
+
+    for entry in feed.entries[:3]:  # send first 3 deals
+        title = entry.title
+        link = entry.link
+
+        # Add affiliate tag
+        if "amazon" in link:
+            if "?" in link:
+                link += f"&tag={AFF_TAG}"
+            else:
+                link += f"?tag={AFF_TAG}"
+
+        text = f"🔥 <b>{title}</b>\n\n👉 {link}"
+        send_message(text)
 
 if __name__ == "__main__":
     main()
+
