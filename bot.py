@@ -3,7 +3,7 @@ import requests
 import feedparser
 
 BOT_TOKEN = os.getenv("8204941014:AAGWCWYqWSUKLYf0Eb1tL0mQX2lXjrYvXzw")
-CHAT_ID = os.getenv("-1003076713032")
+CHAT_ID = os.getenv("@primedayofferss")
 AFF_TAG = os.getenv("primedaydisco-21")
 
 # RSS feed (example)
