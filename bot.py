@@ -33,6 +33,8 @@ def send_message(msg):
     print("sent:", resp.status_code, resp.text)
 
 def main():
+    send_message("🔥 GitHub workflow is working bro!")
+    
     feed = feedparser.parse(RSS_FEED)
     # iterate first few items to avoid spam
     for entry in feed.entries[:5]:
